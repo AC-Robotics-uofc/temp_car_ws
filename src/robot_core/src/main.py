@@ -3,6 +3,7 @@
 import copy
 import time
 import argparse
+import math
 
 import rospy
 from geometry_msgs.msg import Point, Twist
@@ -128,7 +129,7 @@ def draw_tags(
 
         point_message.z = dist #z is in meters 
         #rospy.loginfo(point_message)
-        pubPoint.publish(point_message)
+        #pubPoint.publish(point_message)
         vel_message = Twist()
         if(center[0] >= 400):
             vel_message.angular.z = -0.5
@@ -138,7 +139,13 @@ def draw_tags(
             vel_message.linear.x = 1
 
         pubVel.publish(vel_message)
-        rospy.loginfo(vel_message)
+        #rospy.loginfo(vel_message)
+
+        x = math.sin((point_message.x - 320) / 640 * math.pi / 6) * point_message.z
+        point_message.x = x
+
+        rospy.loginfo(point_message)
+        pubPoint.publish(point_message)
 
         cv.circle(image, (center[0], center[1]), 5, (0, 0, 255), 2)
 
